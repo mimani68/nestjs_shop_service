@@ -5,6 +5,7 @@ import { ProductService } from './product.service';
 import { Product } from './product.schema';
 import { CreateProductDto, UpdateProductDto } from './product.dto';
 import { EntityError } from 'src/class/error/entity';
+import { SuccessResponse } from 'src/class/response/success';
 
 @ApiTags('product')
 @Controller('product')
@@ -13,13 +14,13 @@ export class ProductController {
 
 	@Get(':id')
 	@ApiCreatedResponse({ type: Product })
-	async getSingleProduct(@Param('id') id: string): Promise<Product|EntityError> {
+	async getSingleProduct(@Param('id') id: string): Promise<SuccessResponse|EntityError> {
 		return this.productService.getProductById(id);
 	}
 
 	@Get('')
 	@ApiCreatedResponse({ type: Product })
-	async getProducts(): Promise<Product[]|EntityError> {
+	async getProducts(): Promise<SuccessResponse | EntityError> {
 		return this.productService.getProductList();
 	}
 
