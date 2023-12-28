@@ -1,44 +1,57 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
-
-export class ProductDto {
-	@IsNotEmpty()
-	@ApiProperty()
-	readonly id: number;
-
-	@IsNotEmpty()
-	@ApiProperty()
-	readonly nameEn: string;
-
-	@IsNotEmpty()
-	@ApiProperty()
-	readonly nameFa: string;
-
-	@IsNotEmpty()
-	@ApiProperty()
-	readonly code: number;
-}
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { ProductType } from './product.schema';
 
 export class CreateProductDto {
-	@IsNotEmpty()
+    @IsNotEmpty()
 	@ApiProperty()
-	readonly nameEn: string;
+    sku: string;
 
-	@IsNotEmpty()
+    @IsNotEmpty()
 	@ApiProperty()
-	readonly nameFa: string;
+    title: string;
+
+    @IsNotEmpty()
+	@ApiProperty()
+    description: string;
+
+    @IsNotEmpty()
+	@ApiProperty()
+    type: ProductType;
+
+    @IsNotEmpty()
+	@ApiProperty()
+    price: string;
 }
 
 export class UpdateProductDto {
-	@IsNotEmpty()
+    @IsString()
+    @IsOptional()
 	@ApiProperty()
-	readonly id: number;
+    sku: string;
 
-	@IsNotEmpty()
+    @IsString()
+    @IsOptional()
 	@ApiProperty()
-	readonly nameEn: string;
+    title: string;
 
-	@IsNotEmpty()
+    @IsString()
+    @IsOptional()
 	@ApiProperty()
-	readonly nameFa: string;
+    description: string;
+
+    @IsString()
+    @IsOptional()
+	@ApiProperty()
+    type: ProductType;
+
+    @IsString()
+    @IsOptional()
+	@ApiProperty()
+    price: string;
+
+    @IsString()
+    @IsOptional()
+	@ApiProperty()
+    updatedAt: string;
 }

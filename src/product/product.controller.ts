@@ -1,8 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
-import { ApiCreatedResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+
 import { ProductService } from './product.service';
-import { ProductEntity } from './product.entity';
-import { CreateProductDto, ProductDto, UpdateProductDto } from './product.dto';
+import { Product } from './product.schema';
+import { CreateProductDto, UpdateProductDto } from './product.dto';
+import { EntityError } from 'src/class/error/entity';
 
 @ApiTags('product')
 @Controller('product')
@@ -10,41 +12,31 @@ export class ProductController {
 	constructor(private readonly productService: ProductService) {}
 
 	@Get(':id')
-	@ApiCreatedResponse({ type: ProductDto })
-	async getPaymentSource(@Param('id') id: number): Promise<ProductEntity> {
-		return Promise.resolve({
-			code: 0,
-			id: 0,
-			nameEn: "",
-			nameFa: ""
-		});
+	@ApiCreatedResponse({ type: Product })
+	async getSingleProduct(@Param('id') id: string): Promise<Product|EntityError> {
+		return this.productService.getProductById(id);
 	}
 
 	@Get('')
-	@ApiCreatedResponse({ type: ProductDto })
-	@ApiQuery({
-		name: 'searchKeyword',
-		required: false,
-		description: 'Search with name'
-	})
-	async getPaymentSources(@Query('searchKeyword') searchKeyword): Promise<ProductEntity[]> {
-		return this.productService.getProductList(searchKeyword);
+	@ApiCreatedResponse({ type: Product })
+	async getProducts(): Promise<Product[]|EntityError> {
+		return this.productService.getProductList();
 	}
 
 	@Post()
-	@ApiCreatedResponse({ type: ProductDto })
-	async createPaymentSource(@Body() dto: CreateProductDto) {
+	@ApiCreatedResponse({ type: Product })
+	async createNewProduct(@Body() dto: CreateProductDto) {
 		return this.productService.createProduct(dto);
 	}
 
-	@Put()
+	@Patch(':id')
 	@ApiCreatedResponse({ type: UpdateProductDto })
-	async updatePaymentSource(@Body() dto: UpdateProductDto) {
-		return this.productService.update(dto);
+	async updateProduct(@Param('id') id: string, @Body() dto: UpdateProductDto) {
+		return this.productService.update(id, dto);
 	}
 
 	@Delete(':id')
-	async deletePaymentSource(@Param('id') id: number): Promise<any> {
-		return Promise.resolve()
+	async deleteProduct(@Param('id') id: string): Promise<any> {
+		return this.productService.delete(id);
 	}
 }

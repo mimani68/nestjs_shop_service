@@ -6,6 +6,7 @@ import * as bodyParser from 'body-parser';
 
 import { version } from '../package.json';
 import { AppModule } from './app.module';
+import { BannerGenerator } from './class/banner/banner';
 
 export async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -50,7 +51,10 @@ export async function bootstrap() {
 
     // Start the application and listen on the specified port
     const server = await app.listen(process.env.PORT, () => {
-        console.log(`Shop microservice ver ${version} is listening`);
+        const banner = new BannerGenerator()
+        console.log('--------------------------------------------------------------');
+        console.log(banner.generate());
+        console.log('--------------------------------------------------------------');
     });
     
     // Set the server timeout to 600,000 milliseconds (10 minutes)

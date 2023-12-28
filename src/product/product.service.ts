@@ -1,68 +1,94 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
-import { ProductEntity } from './product.entity';
+import { Product } from './product.schema';
 import { CreateProductDto, UpdateProductDto } from './product.dto';
+import { EntityError } from 'src/class/error/entity';
 
 @Injectable()
 export class ProductService {
 	constructor(
-		@InjectRepository(ProductEntity)
-		private readonly productRepository: Repository<ProductEntity>
-	) {}
+		@InjectModel(Product.name)
+		private readonly productModel: Model<Product>
+	) { }
 
-	/**
-	 * @param searchKeyword
-	 */
-	async getProductList(searchKeyword: string): Promise<ProductEntity[]> {
-		const where = searchKeyword ? [{ nameFa: Like(`%${searchKeyword}%`) }, { nameEn: Like(`%${searchKeyword}%`) }] : [];
-
-		const productes = await this.productRepository.find({ where: where });
-		if (!productes) {
-			throw new NotFoundException({});
+	async getProductById(id: string): Promise<Product | EntityError> {
+		try {
+			const product = await this.productModel.findOne({ _id: id }).exec();
+			if (!product) {
+				return new EntityError('The product is empty', Product.name)
+			}
+			return product;
+		} catch (error) {
+			return new EntityError('The product is empty', Product.name)
 		}
+	}
 
-		return productes;
+	async getProductList(): Promise<Product[] | EntityError> {
+		try {
+			const products = await this.productModel.find().exec();
+			if (!products) {
+				return new EntityError('The product list is empty', Product.name)
+			}
+			return products;
+		} catch (error) {
+			return new EntityError('The product list is empty', Product.name)
+		}
 	}
 
 	/**
 	 * Create product
-	 * @param dto
+	 * @param newProduct
 	 */
-	async createProduct(dto: CreateProductDto): Promise<ProductEntity> {
-		// Generate code id
-		let code = 100;
-		code = 1000;
-		const { nameEn, nameFa } = dto;
-		return await this.productRepository.save({
-			nameEn,
-			nameFa,
-			code
-		}).catch((error) => {
-			if (error.code === 'ER_DUP_ENTRY') {
-				throw new BadRequestException(error.message);
-			}
-			throw error;
-		});
+	async createProduct(newProduct: CreateProductDto): Promise<Product | EntityError> {
+		try {
+			const newProductObject = new Product()
+			newProductObject.sku = newProduct.sku
+			newProductObject.title = newProduct.title
+			newProductObject.description = newProduct.description
+			newProductObject.type = newProduct.type
+			newProductObject.createdAt = new Date().toISOString()
+			return await this.productModel.create(newProduct)
+		} catch (error) {
+			return new EntityError('Unable to create product', Product.name)
+		}
 	}
 
 	/**
 	 * Update existing product
 	 * @param dto
 	 */
-	async update(dto: UpdateProductDto): Promise<any> {
-		const { id, nameEn, nameFa } = dto;
-		const updateModel: { [k: string]: any } = {};
-		if (nameEn) {
-			updateModel.nameEn = nameEn;
+	async update(id: string, updateModel: UpdateProductDto): Promise<any> {
+		try {
+			updateModel.updatedAt = new Date().toISOString()
+			await this.productModel.updateOne({ _id: id }, updateModel).exec();
+			return await this.productModel.findOne({
+				_id: id
+			});
+		} catch (error) {
+			return new EntityError('Unable to update product.', Product.name)
 		}
-		if (nameFa) {
-			updateModel.nameFa = nameFa;
+	}
+
+	async delete(id: string): Promise<any> {
+		try {
+			let temp = await this.productModel.findOne({
+				_id: id
+			});
+			await this.productModel.deleteOne({ _id: id });
+			if (temp) {
+				return {
+					message: "Deletion done.",
+					data: temp
+				}
+			} else {
+				return {
+					message: "The relevant item is not exists."
+				}
+			}
+		} catch (error) {
+			return new EntityError('Unable to delete product.', Product.name)
 		}
-		await this.productRepository.save({ id }, updateModel);
-		return await this.productRepository.findOneBy({
-			id: id
-		});
 	}
 }
