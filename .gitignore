@@ -1,0 +1,63 @@
+# compiled output
+**/dist
+**/node_modules
+
+# Logs
+logs
+**/*.log
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/lerna-debug.log*
+
+# OS
+**/.DS_Store
+
+# Tests
+/coverage
+/.nyc_output
+
+# IDEs and editors
+.idea
+**/.idea
+**/.project
+**/.classpath
+**/.c9/
+**/*.launch
+**/.settings/
+**/*.sublime-workspace
+
+# IDE - VSCode
+**/.vscode/*
+**/!.vscode/settings.json
+**/!.vscode/tasks.json
+**/!.vscode/launch.json
+**/!.vscode/extensions.json
+**/uploads/!hooshmandCertBundle.pfx
+
+ormconfig.json
+**/.env
+
+# Database Scripts
+**/database_scripts/archive
+
+**/package-lock.json
+assets/package-lock.json
+
+# Migration
+assets/src/db/migrations
+
+# Compodoc
+assets/documentation
+
+# Tests
+assets/coverage
+assets/git-runner.js
+
+# sonar
+assets/sonar-scanner
+**/.scannerwork
+
+# sonar
+assets/checkBook
+
