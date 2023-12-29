@@ -10,12 +10,12 @@ export class CreateCartDto {
     @Prop()
     description: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     @ApiProperty()
     @Prop()
-    items: Product[];
+    items: string[];
 
-    @IsNotEmpty()
+    @IsOptional()
     @ApiProperty()
     @Prop()
     status: "active" | "inactive";

@@ -8,9 +8,9 @@ export type ProductType = "POD" | "Digital" | "Physical"
 @Schema()
 export class Product {
 
-    @IsOptional()
-    @ApiProperty()
-    @Prop()
+    // @IsNotEmpty()
+    // @ApiProperty()
+    // @Prop()
     _id: string;
 
     @IsNotEmpty()

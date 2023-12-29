@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 import { Cart } from './cart.schema';
 import { SuccessResponse } from 'src/class/response/success';
@@ -58,11 +58,12 @@ export class CartService {
 	async createCart(newCart: CreateCartDto): Promise<SuccessResponse | ErrorResponse> {
 		try {
 			const newCartObject = new Cart()
+			// newCartObject._id = new Types.ObjectId();
 			newCartObject.description = newCart.description
-			newCartObject.items = newCart.items
+			newCartObject.items = newCart?.items || []
 			newCartObject.status = "active"
 			newCartObject.createdAt = new Date().toISOString()
-			let data = await this.cartModel.create(newCart)
+			let data = await this.cartModel.create(newCartObject)
 			return new SuccessResponse(data)
 		} catch (error) {
 			return new ErrorResponse('Unable to create cart', Cart.name)
@@ -84,9 +85,12 @@ export class CartService {
 			if (!cart) {
 				return new ErrorResponse('Cart is not exists.')
 			}
-			let items = cart.items.push(product.id)
-			let data = await this.cartModel.updateOne({ _id: cartId }, { items })
-			return new SuccessResponse(data)
+			let items = cart.items.push(product._id)
+			let data = await this.cartModel.updateOne({ _id: cartId }, { items: product._id })
+			return new SuccessResponse({
+				message: data.acknowledged && data.modifiedCount > 0 ? 'Adding product to basket was successful' : 'Trouble in adding product to basket',
+				isCartUpdated: data.acknowledged && data.modifiedCount > 0 ? true : false
+			})
 		} catch (error) {
 			return new ErrorResponse('Unable to create cart', Cart.name)
 		}
@@ -105,7 +109,8 @@ export class CartService {
 				return new ErrorResponse('Cart is not exists.')
 			}
 			for ( let item of cart.items ) {
-				let product = await this.productModel.findOne({ _id: item?._id })
+				let product = await this.productModel.findOne({ _id: item })
+				// let product = await this.productModel.findOne({ _id: item?._id })
 				if (!product) {
 					return new ErrorResponse('Product is not exists.')
 				}

@@ -7,20 +7,20 @@ import { Product } from 'src/product/product.schema';
 @Schema()
 export class Cart {
     
-    @IsOptional()
-    @ApiProperty()
-    @Prop()
-    _id: string;
+    // @IsOptional()
+    // @ApiProperty()
+    // @Prop()
+    _id: any;
 
-    @IsNotEmpty()
+    @IsOptional()
     @ApiProperty()
     @Prop()
     description: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     @ApiProperty()
     @Prop()
-    items: Product[];
+    items: string[];
 
     @IsNotEmpty()
     @ApiProperty()
