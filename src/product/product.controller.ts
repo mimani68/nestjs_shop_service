@@ -4,7 +4,7 @@ import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { ProductService } from './product.service';
 import { Product } from './product.schema';
 import { CreateProductDto, UpdateProductDto } from './product.dto';
-import { EntityError } from 'src/class/error/entity';
+import { ErrorResponse } from 'src/class/error/entity';
 import { SuccessResponse } from 'src/class/response/success';
 
 @ApiTags('product')
@@ -14,13 +14,13 @@ export class ProductController {
 
 	@Get(':id')
 	@ApiCreatedResponse({ type: Product })
-	async getSingleProduct(@Param('id') id: string): Promise<SuccessResponse|EntityError> {
+	async getSingleProduct(@Param('id') id: string): Promise<SuccessResponse|ErrorResponse> {
 		return this.productService.getProductById(id);
 	}
 
 	@Get('')
 	@ApiCreatedResponse({ type: Product })
-	async getProducts(): Promise<SuccessResponse | EntityError> {
+	async getProducts(): Promise<SuccessResponse | ErrorResponse> {
 		return this.productService.getProductList();
 	}
 

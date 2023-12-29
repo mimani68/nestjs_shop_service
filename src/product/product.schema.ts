@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsPositive } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { SkuGenerator } from 'src/class/sku/generator';
 
@@ -7,10 +7,11 @@ export type ProductType = "POD" | "Digital" | "Physical"
 
 @Schema()
 export class Product {
-    // @IsNotEmpty()
-    // @ApiProperty()
-    // @Prop()
-    // _id: string;
+
+    @IsOptional()
+    @ApiProperty()
+    @Prop()
+    _id: string;
 
     @IsNotEmpty()
     @ApiProperty()
@@ -32,10 +33,20 @@ export class Product {
     @Prop()
     type: ProductType;
 
+    @IsOptional()
+    @ApiProperty()
+    @Prop()
+    final_price: number;
+
     @IsNotEmpty()
     @ApiProperty()
     @Prop()
-    price: string;
+    price: number;
+
+    @IsOptional()
+    @ApiProperty()
+    @Prop()
+    currency: "usd" | "yen";
 
     @IsNotEmpty()
     @ApiProperty()
