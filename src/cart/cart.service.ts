@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 
 import { Cart } from './cart.schema';
 import { SuccessResponse } from 'src/class/response/success';
@@ -26,7 +26,7 @@ export class CartService {
 	 */
 	async getCartById(id: string): Promise<SuccessResponse | ErrorResponse> {
 		try {
-			const cart = await this.cartModel.findOne({ _id: id }).exec();
+			const cart = await this.cartModel.findOne({ _id: id });
 			if (!cart) {
 				return new ErrorResponse('The cart is empty', Cart.name)
 			}
@@ -41,7 +41,7 @@ export class CartService {
 	 */
 	async getCartList(): Promise<SuccessResponse | ErrorResponse> {
 		try {
-			const carts = await this.cartModel.find().exec();
+			const carts = await this.cartModel.find();
 			if (!carts) {
 				return new ErrorResponse('The cart list is empty', Cart.name)
 			}

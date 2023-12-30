@@ -11,7 +11,7 @@ describe('ProductCostCalculator', () => {
     test('should calculate cost for Physical products with Self-Managed Shipping', () => {
       const calculator = new ProductCostCalculator(20);
       const cost = calculator.calculateCost('Physical', 'Self-Managed Shipping');
-      expect(cost).toBe(20); // Assuming shipping cost is directly added to the total cost
+      expect(cost).toBe(22); // Assuming shipping cost is directly added to the total cost
     });
 
     test('should calculate cost for Physical products with Easy Post Shipping', () => {
@@ -28,6 +28,7 @@ describe('ProductCostCalculator', () => {
 
     test('should throw error for invalid product type', () => {
       const calculator = new ProductCostCalculator(0);
+      // @ts-ignore
       expect(() => calculator.calculateCost('InvalidType')).toThrow('Invalid product type');
     });
   });

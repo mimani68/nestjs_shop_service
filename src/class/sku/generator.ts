@@ -14,11 +14,11 @@ export class SkuGenerator {
 
     public generateCode () {
         let template = ''
-        if (this.type === 'Physical') {
+        if (this.type.toLowerCase() === 'physical') {
             template = 'phy'
             template += this.size ? '-' + this.size.replace(/\s\\n\t\:\.\_\-/ig, '') : ''
             template += this.color ? '-' + this.color.replace(/\s\\n\t\:\.\_\-/ig, '') : ''
-        } else if (this.type === 'POD') {
+        } else if (this.type.toLowerCase() === 'pod') {
             template = 'pod'
         } else {
             template = 'digital'

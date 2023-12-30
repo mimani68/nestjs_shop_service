@@ -85,7 +85,7 @@ export class Product {
 }
 
 export class ProductImage {
-    small: string;
+    lq: string;
     hq: string;
     isDefault: boolean;
 }
